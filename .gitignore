@@ -1,0 +1,15 @@
+# Pasta gerada pelo Maven
+target/
+
+# Pastas do Eclipse/STS
+.classpath
+.project
+.settings/
+
+# Arquivos compilados
+*.class
+
+# IDEs
+.idea/
+*.iml
+
