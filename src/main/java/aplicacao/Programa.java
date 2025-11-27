@@ -1,5 +1,6 @@
 package aplicacao;
 
+import java.util.List;
 import java.util.Scanner;
 
 import javax.persistence.EntityManager;
@@ -18,23 +19,61 @@ public class Programa {
 		 EntityManagerFactory emf = Persistence.createEntityManagerFactory("exemplo-jpa");
 		 EntityManager em = emf.createEntityManager();
 		 
-		 System.out.println("=== Cadastro de Pessoa ===");
+		 System.out.println("=== MENU ===");
+		 System.out.println("01 - Cadastrar Pessoa");
+		 System.out.println("02 - Consultar Pessoas");
+		 System.out.println("03 - Remover Pessoa por ID");
+		 System.out.print("Escolha uma opção: ");
+		 int opcao = sc.nextInt();
+		 sc.nextLine();
 		 
-		 System.out.print("Digite o nome: ");
-	     String nome = sc.nextLine();  // lê o nome digitado
+		 
+		if (opcao == 1 ) {
+			 System.out.print("Digite o nome: ");
+		     String nome = sc.nextLine();  // lê o nome digitado
 
-	     System.out.print("Digite o email: ");
-	     String email = sc.nextLine(); // lê o email digitado
-	     
-	     System.out.print("Digite a idade: ");
-	     Double idade = sc.nextDouble(); // lê o email digitado
+		     System.out.print("Digite o email: ");
+		     String email = sc.nextLine(); // lê o email digitado
+		     
+		     System.out.print("Digite a idade: ");
+		     Double idade = sc.nextDouble(); // lê o email digitado
+		      
+		      Pessoa p = new Pessoa(null, nome, email, idade);
+		      
+		      // Salvar no banco 
+		      em.getTransaction().begin();
+		      em.persist(p);
+		      em.getTransaction().commit();
+		}
+		else if (opcao == 2) {
+		    List<Pessoa> lista = em.createQuery("FROM Pessoa", Pessoa.class).getResultList();
+
+		    System.out.println("\n=== PESSOAS CADASTRADAS ===");
+		    for (Pessoa pessoa : lista) {
+		        System.out.println(pessoa);
+		    }
+
+		} else if (opcao == 3) {
+		    System.out.print("Digite o ID da pessoa para remover: ");
+		    int id = sc.nextInt();
+
+		    Pessoa pessoa = em.find(Pessoa.class, id);
+
+		    if (pessoa != null) {
+		        em.getTransaction().begin();
+		        em.remove(pessoa);
+		        em.getTransaction().commit();
+		        System.out.println("Pessoa removida com sucesso!");
+		    } else {
+		        System.out.println("ID não encontrado!");
+		    }
+
+		} else {
+		    System.out.println("Opção inválida!");
+		}
+		
 	      
-	      Pessoa p = new Pessoa(null, nome, email, idade);
 	      
-	      // Salvar no banco 
-	      em.getTransaction().begin();
-	      em.persist(p);
-	      em.getTransaction().commit();
 	      
 	      // Fechar tudo
 	        em.close();
